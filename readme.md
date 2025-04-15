@@ -125,6 +125,6 @@ sqlite3 /var/lib/chat_app/chat.db ".backup /var/lib/chat_app/backup/chat-manual.
 Замените все вхождения `domain.` на ваш реальный домен при настройке.
 А так же
 
-`app.secret_key='Rdjzan0sUsSP7KfPoheB'` - Замените ключ на свой в файле [app.py](127.0.0.1)
+`app.secret_key='Rdjzan0sUsSP7KfPoheB'` - Замените ключ на свой в файле [app.py](app.py)
 
 Проект крафтился чисто между тикетами в тпх
