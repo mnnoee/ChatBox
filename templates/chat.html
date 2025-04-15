@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Chat</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root {
+      --primary: #d32f2f;
+      --primary-dark: #9a0007;
+      --surface: #121212;
+      --background: #000000;
+      --text: #ffffff;
+      --text-secondary: rgba(255,255,255,0.7);
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Roboto', sans-serif;
+    }
+    body {
+      background: var(--background);
+      color: var(--text);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .header {
+      background: var(--surface);
+      padding: 1rem;
+      border-bottom: 1px solid var(--primary);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .header h1 {
+      font-size: 1.5rem;
+      font-weight: 500;
+    }
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .logout-btn {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .chat-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+      height: calc(100vh - 72px);
+    }
+    .messages {
+      flex: 1;
+      padding: 1rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .message {
+      padding: 0.75rem 1rem;
+      background: var(--surface);
+      border-radius: 0.5rem;
+      max-width: 80%;
+      word-break: break-word;
+      line-height: 1.4;
+    }
+    .message.own {
+      align-self: flex-end;
+      background: var(--primary);
+      color: white;
+    }
+    .time {
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      margin-right: 0.5rem;
+    }
+    .message.own .time {
+      color: rgba(255,255,255,0.7);
+    }
+    .sender {
+      font-weight: 500;
+      color: var(--primary);
+      margin-right: 0.5rem;
+    }
+    .message.own .sender {
+      color: white;
+    }
+    .input-area {
+      padding: 1rem;
+      background: var(--surface);
+      display: flex;
+      border-top: 1px solid #333;
+    }
+    .input-field {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      border-radius: 1.5rem;
+      border: none;
+      background: #1e1e1e;
+      color: var(--text);
+      font-size: 1rem;
+      outline: none;
+    }
+    .send-btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 3rem;
+      height: 3rem;
+      margin-left: 0.75rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+    .send-btn:hover {
+      background: var(--primary-dark);
+    }
+    @media (max-width: 768px) {
+      .header {
+        padding: 0.75rem;
+      }
+      .header h1 {
+        font-size: 1.25rem;
+      }
+      .messages {
+        padding: 0.75rem;
+        gap: 0.5rem;
+      }
+      .message {
+        max-width: 90%;
+        padding: 0.6rem 0.8rem;
+        font-size: 0.9rem;
+      }
+      .input-area {
+        padding: 0.75rem;
+      }
+      .input-field {
+        padding: 0.6rem 0.8rem;
+      }
+      .send-btn {
+        width: 2.5rem;
+        height: 2.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Chat</h1>
+    <div class="user-info">
+      <span>{{ username }}</span>
+      <a href="/logout" class="logout-btn">Exit</a>
+    </div>
+  </div>
+
+  <div class="chat-container">
+    <div class="messages" id="messages">
+      {% for sender, message, time in messages %}
+      <div class="message {% if sender == username %}own{% endif %}">
+        <span class="time">{{ time }}</span>
+        <span class="sender">{{ sender }}:</span>
+        <span class="text">{{ message }}</span>
+      </div>
+      {% endfor %}
+    </div>
+
+    <form method="post" class="input-area">
+      <input type="text" name="message" class="input-field" placeholder="Type your message..." autocomplete="off" required>
+      <button type="submit" class="send-btn">→</button>
+    </form>
+  </div>
+
+  <script>
+    // Auto-scroll and update functions
+    const messagesEl = document.getElementById('messages');
+    function scrollToBottom() {
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+    scrollToBottom();
+
+    let updateInterval;
+    function updateMessages() {
+      fetch('/chat_updates?last=' + messagesEl.children.length)
+        .then(r => r.text())
+        .then(data => {
+          const newMessages = data.split("<!--SPLIT-->")[1];
+          if (newMessages) {
+            messagesEl.innerHTML += newMessages;
+            scrollToBottom();
+          }
+        });
+    }
+    updateInterval = setInterval(updateMessages, 2000);
+
+    // Pause updates when interacting
+    const inputField = document.querySelector('input[name="message"]');
+    inputField.addEventListener('focus', () => clearInterval(updateInterval));
+    inputField.addEventListener('blur', () => {
+      updateInterval = setInterval(updateMessages, 2000);
+    });
+
+    messagesEl.addEventListener('mouseenter', () => clearInterval(updateInterval));
+    messagesEl.addEventListener('mouseleave', () => {
+      updateInterval = setInterval(updateMessages, 2000);
+    });
+
+    // Focus input on load
+    inputField.focus();
+  </script>
+</body>
+</html>

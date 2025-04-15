@@ -1,0 +1,22 @@
+[Unit]
+Description=Simple Chat Service
+After=network.target
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=/var/lib/chat_app
+Environment="PYTHONPATH=/var/lib/chat_app"
+ExecStart=/usr/local/bin/gunicorn \
+          -w 4 \
+          -b 127.0.0.1:5000 \
+          --pythonpath /var/lib/chat_app \
+          --error-logfile /var/log/chat_app/error.log \
+          --access-logfile /var/log/chat_app/access.log \
+          app:app
+
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
