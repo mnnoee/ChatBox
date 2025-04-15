@@ -5,7 +5,7 @@
 ## Структура проекта
 
 ```
-└── ver0.1
+└── ChatBox
     ├── __init__.py
     ├── app.py              # Основное приложение Flask
     ├── backup              # Папка для бэкапов БД
@@ -17,6 +17,8 @@
 ```
 
 ## Установка и настройка
+
+****Замените все вхождения `domain.` на ваш реальный домен при настройке.****
 
 ### 1. Зависимости
 
@@ -37,7 +39,7 @@ sudo chmod 750 /var/lib/chat_app
 
 2. Скопируйте файлы проекта:
 ```
-sudo cp -r ver0.1/* /var/lib/chat_app/
+sudo cp -r ChatBox/* /var/lib/chat_app/
 sudo chown -R www-data:www-data /var/lib/chat_app
 ```
 
@@ -122,8 +124,8 @@ sqlite3 /var/lib/chat_app/chat.db ".backup /var/lib/chat_app/backup/chat-manual.
 `journalctl -u chat.service -f` -Просмотр логов
 
 
-Замените все вхождения `domain.` на ваш реальный домен при настройке.
-А так же
+
+##Важное, о чём не принято молчать
 
 `app.secret_key='Rdjzan0sUsSP7KfPoheB'` - Замените ключ на свой в файле [app.py](app.py)
 
