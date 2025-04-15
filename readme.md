@@ -116,11 +116,15 @@ sqlite3 /var/lib/chat_app/chat.db ".backup /var/lib/chat_app/backup/chat-manual.
 ## Управление сервисом
 
 `sudo systemctl restart chat.service` - Перезапуск приложения
+
 `sudo systemctl status chat.service` - Проверка статуса
+
 `journalctl -u chat.service -f` -Просмотр логов
+
 
 Замените все вхождения `domain.` на ваш реальный домен при настройке.
 А так же
+
 `app.secret_key='Rdjzan0sUsSP7KfPoheB'` - Замените ключ на свой в файле [app.py](127.0.0.1)
 
 Проект крафтился чисто между тикетами в тпх
