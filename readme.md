@@ -41,11 +41,13 @@ sudo cp -r ver0.1/* /var/lib/chat_app/
 sudo chown -R www-data:www-data /var/lib/chat_app
 ```
 
-3. Инициализируйте БД:
+3. Инициализируйте БД из под юзера www-data:
 ```
 cd /var/lib/chat_app
 python3 app.py
 ```
+
+
 
 ### 3. Настройка Systemd Service
 
